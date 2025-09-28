@@ -1,7 +1,6 @@
 # ESP-IDF Component: *esp-pms*
 
-[![ESP-IDF](https://img.shields.io/badge/ESP--IDF-%E2%9A%99-blue)](https://github.com/espressif/esp-idf) [![License](https://img.shields.io/github/license/petrovgp/esp-pms
-)](LICENSE)
+[![ESP-IDF](https://img.shields.io/badge/ESP--IDF-%E2%9A%99-blue)](https://github.com/espressif/esp-idf) [![License](https://img.shields.io/github/license/petrovgp/esp-pms)](LICENSE) ![GitHub Release](https://img.shields.io/github/v/release/petrovgp/esp-pms)
 
 ESP-IDF component for Plantower PMSX003 air quality sensors.
 
