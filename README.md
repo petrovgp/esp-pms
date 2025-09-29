@@ -4,6 +4,27 @@
 
 ESP-IDF component for Plantower PMSX003 air quality sensors.
 
+## Available sensors support
+
+| Sensor Model | Status                                                                |
+|--------------|-----------------------------------------------------------------------|
+| PMS1003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMS3003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
+| PMS5003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
+| PMS5003T     | ![Partial](https://img.shields.io/badge/support-partial-yellow) *     |
+| PMS5003ST    | ![Partial](https://img.shields.io/badge/support-partial-yellow) *     |
+| PMS6003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMS7003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMS9003M     | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMSA003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMSX003-N    | ![Not supported](https://img.shields.io/badge/support-no-red) ***     |
+
+\* sensors are supported, but not all data is parsed
+
+\*\* sensors are supported under PMS_TYPE_5003 
+
+\*\*\* unverified, no available datasheet
+
 ## Setup
 
 Clone this repository in your project **components directory** (or create one if it is missing):
