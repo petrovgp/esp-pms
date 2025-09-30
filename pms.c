@@ -244,8 +244,8 @@ esp_err_t pms_set_state(pms_state_e state){
             return ESP_ERR_INVALID_ARG;
 
         case PMS_STATE_SLEEP:
-            if (pms_sensor.state != PMS_STATE_ACTIVE){
-                ESP_LOGW(TAG, "sensor must be in active state to enter sleep state");
+            if (pms_sensor.state == PMS_STATE_RESETTING){
+                ESP_LOGW(TAG, "sensor must not be in resetting state to enter sleep state");
                 return ESP_ERR_INVALID_STATE;
             }
             if (pms_sensor.set_gpio != GPIO_NUM_NC){
