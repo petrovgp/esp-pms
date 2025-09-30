@@ -12,7 +12,7 @@ ESP-IDF component for Plantower PMSX003 air quality sensors.
 | PMS3003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
 | PMS5003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
 | PMS5003T     | ![Partial](https://img.shields.io/badge/support-partial-yellow) *     |
-| PMS5003ST    | ![Partial](https://img.shields.io/badge/support-partial-yellow) *     |
+| PMS5003ST    | ![Not supported](https://img.shields.io/badge/support-no-red)         |
 | PMS6003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
 | PMS7003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
 | PMS9003M     | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
