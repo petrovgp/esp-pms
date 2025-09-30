@@ -250,9 +250,6 @@ esp_err_t pms_set_state(pms_state_e state){
             }
             if (pms_sensor.set_gpio != GPIO_NUM_NC){
                 pms_set_control_pin(pms_sensor.set_gpio, 0);
-            }else if(pms_sensor.mode != PMS_MODE_PASSIVE){
-                ESP_LOGW(TAG, "sensor must be in passive mode to enter sleep state without control pin");
-                return ESP_ERR_INVALID_STATE;
             }else{
                 pms_command_t command = {0};
                 pms_get_state_cmd(state, &command);
@@ -273,9 +270,6 @@ esp_err_t pms_set_state(pms_state_e state){
             }
             if (pms_sensor.set_gpio != GPIO_NUM_NC){
                 pms_set_control_pin(pms_sensor.set_gpio, 1);
-            }else if(pms_sensor.mode != PMS_MODE_PASSIVE){
-                ESP_LOGW(TAG, "sensor must be in passive mode to enter active state without control pin");
-                return ESP_ERR_INVALID_STATE;
             }else{
                 pms_command_t command = {0};
                 pms_get_state_cmd(state, &command);
