@@ -22,17 +22,12 @@
 #define PMS_CMD_LEN             0x07
 #define PMS_RESPONSE_LEN        0x08
 
-// Commands identifiers
-#define PMS_CMD_READ_PASSIVE    0xe2
-#define PMS_CMD_SET_MODE        0xe1
-#define PMS_CMD_SET_STATE       0xe4
-#define PMS_CMD_PAYLOAD_LEN     0x05
-
-// Commands data
-#define PMS_MODE_PASSIVE_DATA   0x00
-#define PMS_MODE_ACTIVE_DATA    0x01
-#define PMS_STATE_SLEEP_DATA    0x00
-#define PMS_STATE_ACTIVE_DATA   0x01
+// Commands
+static uint8_t pms_cmd_mode_passive[] = {0x42, 0x4d, 0xe1, 0x00, 0x00, 0x01, 0x70};
+static uint8_t pms_cmd_mode_active[]  = {0x42, 0x4d, 0xe1, 0x00, 0x01, 0x01, 0x71};
+static uint8_t pms_cmd_state_sleep[]  = {0x42, 0x4d, 0xe4, 0x00, 0x00, 0x01, 0x73};
+static uint8_t pms_cmd_state_active[] = {0x42, 0x4d, 0xe4, 0x00, 0x01, 0x01, 0x74};
+static uint8_t pms_cmd_read_passive[] = {0x42, 0x4d, 0xe2, 0x00, 0x00, 0x01, 0x71};
 
 // Data frame lenght in bytes
 #define PMS_3003_FRAME_LEN      24
@@ -109,55 +104,38 @@ static esp_err_t pms_set_control_pin(gpio_num_t pin, uint32_t state){
     return gpio_set_level(pin, state);
 }
 
-static esp_err_t pms_get_mode_cmd(pms_mode_e mode, pms_command_t *command){
-    if (command == NULL) {
-        ESP_LOGE(TAG, "command pointer is NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+static uint8_t *pms_get_mode_cmd(pms_mode_e mode){
     if (mode >= PMS_MODE_MAX) {
         ESP_LOGE(TAG, "invalid mode");
-        return ESP_ERR_INVALID_ARG;
+        return NULL;
     }
 
-    command->cmd = PMS_CMD_SET_MODE;
-    command->data = mode ? PMS_MODE_ACTIVE_DATA : PMS_MODE_PASSIVE_DATA;
+    switch(mode){
+        case PMS_MODE_ACTIVE: return pms_cmd_mode_active;
+        case PMS_MODE_PASSIVE: return pms_cmd_mode_passive;
+        default: break;
+    }
 
-    return ESP_OK;
+    return NULL;
 }
 
-static esp_err_t pms_get_state_cmd(pms_state_e state, pms_command_t *command){
-    if(command == NULL) {
-        ESP_LOGE(TAG, "command pointer is NULL");
-        return ESP_ERR_INVALID_ARG;
-    }
+static uint8_t *pms_get_state_cmd(pms_state_e state){
     if (state >= PMS_STATE_MAX) {
         ESP_LOGE(TAG, "invalid state");
-        return ESP_ERR_INVALID_ARG;
+        return NULL;
     }
 
-    command->cmd = PMS_CMD_SET_STATE;
-    command->data = state ? PMS_STATE_ACTIVE_DATA : PMS_STATE_SLEEP_DATA;
+    switch(state){
+        case PMS_STATE_ACTIVE: return pms_cmd_state_active;
+        case PMS_STATE_SLEEP: return pms_cmd_state_sleep;
+        default: break;
+    }
 
-    return ESP_OK;
+    return NULL;
 }
 
-static esp_err_t pms_send_cmd(pms_command_t command){
-    uint8_t msg[PMS_CMD_LEN] = {PMS_START_BYTE_HIGH, PMS_START_BYTE_LOW, 0, 0, 0, 0 ,0};
-
-    msg[2] = command.cmd;
-
-    msg[3] = (command.data >> 8) & 0xFF;
-    msg[4] = command.data & 0xFF;
-
-    uint16_t checksum = 0;
-    for (int i = 0; i < PMS_CMD_PAYLOAD_LEN; i++) {
-        checksum += msg[i];
-    }
-
-    msg[5] = (checksum >> 8) & 0xFF;
-    msg[6] = checksum & 0xFF;
-    
-    if(uart_write_bytes(pms_sensor.uart_port, (const char *)msg, sizeof(msg)) != sizeof(msg)){
+static esp_err_t pms_send_cmd(uint8_t *command){
+    if(uart_write_bytes(pms_sensor.uart_port, (const char *)command, PMS_CMD_LEN) != PMS_CMD_LEN){
         ESP_LOGE(TAG, "failed to send command");
         return ESP_FAIL;
     }
@@ -216,10 +194,10 @@ esp_err_t pms_set_mode(pms_mode_e mode){
     if (pms_sensor.mode == mode)
         return ESP_OK;
 
-    pms_command_t command = {0};
-    if(pms_get_mode_cmd(mode, &command) != ESP_OK){
+    uint8_t *command = pms_get_mode_cmd(mode);
+    if (command == NULL){
         ESP_LOGE(TAG, "failed to get mode command");
-        return ESP_ERR_INVALID_RESPONSE;
+        return ESP_ERR_INVALID_ARG;
     }
     if(pms_send_cmd(command) != ESP_OK){
         ESP_LOGE(TAG, "failed to send mode command");
@@ -251,9 +229,11 @@ esp_err_t pms_set_state(pms_state_e state){
             if (pms_sensor.set_gpio != GPIO_NUM_NC){
                 pms_set_control_pin(pms_sensor.set_gpio, 0);
             }else{
-                pms_command_t command = {0};
-                pms_get_state_cmd(state, &command);
-                    
+                uint8_t *command = pms_get_state_cmd(state);
+                if (command == NULL){
+                    ESP_LOGE(TAG, "failed to get state command");
+                    return ESP_ERR_INVALID_ARG;
+                }
                 if (pms_send_cmd(command) != ESP_OK){
                     ESP_LOGE(TAG, "failed to send command");
                     return ESP_ERR_INVALID_RESPONSE;
@@ -271,9 +251,11 @@ esp_err_t pms_set_state(pms_state_e state){
             if (pms_sensor.set_gpio != GPIO_NUM_NC){
                 pms_set_control_pin(pms_sensor.set_gpio, 1);
             }else{
-                pms_command_t command = {0};
-                pms_get_state_cmd(state, &command);
-                    
+                uint8_t *command = pms_get_state_cmd(state);
+                if (command == NULL){
+                    ESP_LOGE(TAG, "failed to get state command");
+                    return ESP_ERR_INVALID_ARG;
+                }
                 if (pms_send_cmd(command) != ESP_OK){
                     ESP_LOGE(TAG, "failed to send state command");
                     return ESP_ERR_INVALID_RESPONSE;
@@ -351,11 +333,7 @@ esp_err_t pms_send_passive_read_cmd(void){
     }
 
     // Send read command
-    pms_command_t command = {
-        .cmd = PMS_CMD_READ_PASSIVE,
-        .data = 0    
-    };
-    if(pms_send_cmd(command) != ESP_OK){
+    if(pms_send_cmd(pms_cmd_read_passive) != ESP_OK){
         ESP_LOGE(TAG, "failed to send passive read command");
         return ESP_FAIL;
     }

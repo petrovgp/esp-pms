@@ -138,14 +138,6 @@ typedef enum{
 } pms_state_e;
 
 /**
- * @brief PMS command struct
- */
-typedef struct{
-    uint8_t cmd;
-    uint16_t data;
-} pms_command_t;
-
-/**
  * @brief PMS field ID
  */
 typedef enum {
