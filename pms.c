@@ -167,7 +167,7 @@ static esp_err_t pms_send_cmd(pms_command_t command){
 
 static void pms_timer_cb(TimerHandle_t xTimer){
     switch(pms_sensor.state){
-        case PMS_STATE_RESETING:
+        case PMS_STATE_RESETTING:
             ESP_LOGI(TAG, "sensor reset complete, entering stabilizing state");
             xTimerChangePeriod(pms_sensor.reset_timer, PMS_STABILIZE_TIME_MS / portTICK_PERIOD_MS, 0);
             xTimerStart(pms_sensor.reset_timer, 0);
@@ -235,7 +235,7 @@ esp_err_t pms_set_state(pms_state_e state){
         return ESP_OK;
 
     switch(state){
-        case PMS_STATE_RESETING:
+        case PMS_STATE_RESETTING:
             ESP_LOGW(TAG, "can't set state to resetting, use pms_reset()");
             return ESP_ERR_INVALID_ARG;
 
@@ -294,7 +294,7 @@ esp_err_t pms_set_state(pms_state_e state){
                 return ESP_ERR_INVALID_RESPONSE;
             }
             pms_sensor.mode = PMS_MODE_ACTIVE;
-            pms_sensor.state = PMS_STATE_RESETING;
+            pms_sensor.state = PMS_STATE_RESETTING;
             return ESP_OK;
             break;
 

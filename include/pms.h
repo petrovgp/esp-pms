@@ -131,7 +131,7 @@ typedef enum{
  */
 typedef enum{
     PMS_STATE_SLEEP = 0,    // Sleep state
-    PMS_STATE_RESETING,     // Resetting state
+    PMS_STATE_RESETTING,    // Resetting state
     PMS_STATE_STABILIZING,  // Stabilizing state
     PMS_STATE_ACTIVE,       // Active state
     PMS_STATE_MAX

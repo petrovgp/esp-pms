@@ -43,7 +43,7 @@ void pms_passive_task(void *pvParameters){
                 }
                 break;
 
-            case PMS_STATE_RESETING:
+            case PMS_STATE_RESETTING:
                 ESP_LOGI(TAG, "sensor resetting, waiting...");
                 break;
 
