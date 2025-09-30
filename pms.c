@@ -417,22 +417,8 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len){
             return ESP_ERR_INVALID_CRC;
         }
 
-        // Parse data
-        pms_sensor.data.pm1_cf1 = (data[PMS_PM1_CF1_HIGH_BYTE] << 8) | data[PMS_PM1_CF1_LOW_BYTE];
-        pms_sensor.data.pm2_5_cf1 = (data[PMS_PM2_5_CF1_HIGH_BYTE] << 8) | data[PMS_PM2_5_CF1_LOW_BYTE];
-        pms_sensor.data.pm10_cf1 = (data[PMS_PM10_CF1_HIGH_BYTE] << 8) | data[PMS_PM10_CF1_LOW_BYTE];
-        pms_sensor.data.pm1_atm = (data[PMS_PM1_ATM_HIGH_BYTE] << 8) | data[PMS_PM1_ATM_LOW_BYTE];
-        pms_sensor.data.pm2_5_atm = (data[PMS_PM2_5_ATM_HIGH_BYTE] << 8) | data[PMS_PM2_5_ATM_LOW_BYTE];
-        pms_sensor.data.pm10_atm = (data[PMS_PM10_ATM_HIGH_BYTE] << 8) | data[PMS_PM10_ATM_LOW_BYTE];
-        
-        if(pms_sensor.type == PMS_TYPE_5003){
-            pms_sensor.data.particles_0_3um = (data[PMS_0_3UM_HIGH_BYTE] << 8) | data[PMS_0_3UM_LOW_BYTE];
-            pms_sensor.data.particles_0_5um = (data[PMS_0_5UM_HIGH_BYTE] << 8) | data[PMS_0_5UM_LOW_BYTE];
-            pms_sensor.data.particles_1um = (data[PMS_1UM_HIGH_BYTE] << 8) | data[PMS_1UM_LOW_BYTE];
-            pms_sensor.data.particles_2_5um = (data[PMS_2_5UM_HIGH_BYTE] << 8) | data[PMS_2_5UM_LOW_BYTE];
-            pms_sensor.data.particles_5um = (data[PMS_5_0UM_HIGH_BYTE] << 8) | data[PMS_5_0UM_LOW_BYTE];
-            pms_sensor.data.particles_10um = (data[PMS_10UM_HIGH_BYTE] << 8) | data[PMS_10UM_LOW_BYTE];
-        }
+        // Store raw data frame
+        memcpy(pms_sensor.raw_data, data, len * sizeof(uint8_t));
     } else {
         ESP_LOGE(TAG, "invalid start bytes: %02x %02x", data[0], data[1]);
         return ESP_ERR_INVALID_RESPONSE;
@@ -448,23 +434,23 @@ uint16_t pms_get_data(pms_field_t field){
     }
 
     switch (field) {
-        case PMS_FIELD_PM1_CF1:     return pms_sensor.data.pm1_cf1;
-        case PMS_FIELD_PM2_5_CF1:   return pms_sensor.data.pm2_5_cf1;
-        case PMS_FIELD_PM10_CF1:    return pms_sensor.data.pm10_cf1;
+        case PMS_FIELD_PM1_CF1:     return (pms_sensor.raw_data[PMS_PM1_CF1_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM1_CF1_LOW_BYTE];
+        case PMS_FIELD_PM2_5_CF1:   return (pms_sensor.raw_data[PMS_PM2_5_CF1_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM2_5_CF1_LOW_BYTE];
+        case PMS_FIELD_PM10_CF1:    return (pms_sensor.raw_data[PMS_PM10_CF1_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM10_CF1_LOW_BYTE];
 
-        case PMS_FIELD_PM1_ATM:     return pms_sensor.data.pm1_atm;
-        case PMS_FIELD_PM2_5_ATM:   return pms_sensor.data.pm2_5_atm;
-        case PMS_FIELD_PM10_ATM:    return pms_sensor.data.pm10_atm;
+        case PMS_FIELD_PM1_ATM:     return (pms_sensor.raw_data[PMS_PM1_ATM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM1_ATM_LOW_BYTE];
+        case PMS_FIELD_PM2_5_ATM:   return (pms_sensor.raw_data[PMS_PM2_5_ATM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM2_5_ATM_LOW_BYTE];
+        case PMS_FIELD_PM10_ATM:    return (pms_sensor.raw_data[PMS_PM10_ATM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_PM10_ATM_LOW_BYTE];
 
-        case PMS_FIELD_PC_0_3:      return pms_sensor.data.particles_0_3um;
-        case PMS_FIELD_PC_0_5:      return pms_sensor.data.particles_0_5um;
-        case PMS_FIELD_PC_1_0:      return pms_sensor.data.particles_1um;
-        case PMS_FIELD_PC_2_5:      return pms_sensor.data.particles_2_5um;
-        case PMS_FIELD_PC_5_0:      return pms_sensor.data.particles_5um;
-        case PMS_FIELD_PC_10:       return pms_sensor.data.particles_10um;
+        case PMS_FIELD_PC_0_3:      return (pms_sensor.raw_data[PMS_0_3UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_0_3UM_LOW_BYTE];
+        case PMS_FIELD_PC_0_5:      return (pms_sensor.raw_data[PMS_0_5UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_0_5UM_LOW_BYTE];
+        case PMS_FIELD_PC_1_0:      return (pms_sensor.raw_data[PMS_1UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_1UM_LOW_BYTE];
+        case PMS_FIELD_PC_2_5:      return (pms_sensor.raw_data[PMS_2_5UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_2_5UM_LOW_BYTE];
+        case PMS_FIELD_PC_5_0:      return (pms_sensor.raw_data[PMS_5_0UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_5_0UM_LOW_BYTE];
+        case PMS_FIELD_PC_10:       return (pms_sensor.raw_data[PMS_10UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_10UM_LOW_BYTE];
 
         default:
-            ESP_LOGW(TAG, "invalid field requested: %d", field);
+            ESP_LOGW(TAG, "invalid data requested");
             return 0;
     }
 }
@@ -539,7 +525,7 @@ esp_err_t pms_deinit(){
         .type = PMS_TYPE_MAX,
         .state = PMS_STATE_MAX,
         .mode = PMS_MODE_MAX,
-        .data = {0}
+        .raw_data = {0}
     };
 
     return ESP_OK;

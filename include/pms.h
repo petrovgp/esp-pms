@@ -164,25 +164,6 @@ typedef enum {
 } pms_field_t;
 
 /**
- * @brief PMS data struct
- * 
- */
-typedef struct {
-    uint16_t pm1_cf1;
-    uint16_t pm2_5_cf1;
-    uint16_t pm10_cf1;
-    uint16_t pm1_atm;
-    uint16_t pm2_5_atm;
-    uint16_t pm10_atm;
-    uint16_t particles_0_3um;
-    uint16_t particles_0_5um;
-    uint16_t particles_1um;
-    uint16_t particles_2_5um;
-    uint16_t particles_5um;
-    uint16_t particles_10um;
-} pms_data_t;
-
-/**
  * @brief PMS config struct
  */
 typedef struct{
@@ -202,7 +183,7 @@ typedef struct{
     uart_port_t uart_port;
     gpio_num_t set_gpio;
     gpio_num_t reset_gpio;
-    pms_data_t data;
+    uint8_t raw_data[32];
     TimerHandle_t reset_timer;
 } pms_sensor_t;
 
