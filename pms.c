@@ -339,7 +339,7 @@ static esp_err_t pms_verify_checksum(const uint8_t *data, uint8_t len){
     return ESP_OK;
 }
 
-esp_err_t pms_send_passive_read_cmd(){
+esp_err_t pms_send_passive_read_cmd(void){
     // Check if sensor is in passive mode and active state
     if(pms_sensor.state != PMS_STATE_ACTIVE){
         ESP_LOGE(TAG, "sensor not in active state");
@@ -495,7 +495,7 @@ esp_err_t pms_init(pms_config_t *pms_config){
     return ESP_OK;
 }
 
-esp_err_t pms_deinit(){
+esp_err_t pms_deinit(void){
     // Deinit GPIOs
     if (pms_sensor.set_gpio != GPIO_NUM_NC){
         gpio_reset_pin(pms_sensor.set_gpio);

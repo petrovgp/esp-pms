@@ -203,7 +203,7 @@ esp_err_t pms_init(pms_config_t *pms_config);
  * 
  * @return ESP_OK on success 
  */
-esp_err_t pms_deinit();
+esp_err_t pms_deinit(void);
 
 /**
  * @brief Reset PMS sensor
@@ -271,7 +271,7 @@ pms_type_e pms_get_type(void);
  * 
  * @return ESP_OK on success
  */
-esp_err_t pms_send_passive_read_cmd();
+esp_err_t pms_send_passive_read_cmd(void);
 
 /**
  * @brief Parse and verify PMS command response
