@@ -114,6 +114,7 @@ extern "C" {
 typedef enum{
     PMS_TYPE_3003 = 0,      // PMS3003 type sensor
     PMS_TYPE_5003,          // PMS5003 type sensor
+    PMS_TYPE_5003T,         // PMS5003T type sensor
     PMS_TYPE_MAX
 } pms_type_e;
 
@@ -152,7 +153,10 @@ typedef enum {
     PMS_FIELD_PC_1_0,       // Number of particles >1.0 µm in 0.1 L air
     PMS_FIELD_PC_2_5,       // Number of particles >2.5 µm in 0.1 L air
     PMS_FIELD_PC_5_0,       // Number of particles >5.0 µm in 0.1 L air
-    PMS_FIELD_PC_10         // Number of particles >10 µm in 0.1 L air
+    PMS_FIELD_PC_10,        // Number of particles >10 µm in 0.1 L air
+    PMS_FIELD_TEMP,         // Temperature (PMS5003T and PMS5003ST)
+    PMS_FIELD_HUMIDITY,     // Humidity (PMS5003T and PMS5003ST)
+    PMS_FIELD_MAX
 } pms_field_t;
 
 /**
@@ -291,7 +295,7 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len);
  * @param field PMS filed ID
  * @return Data from parsed PMS frame
  */
-uint16_t pms_get_data(pms_field_t field);
+int16_t pms_get_data(pms_field_t field);
 
 
 #ifdef __cplusplus

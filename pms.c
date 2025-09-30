@@ -402,9 +402,19 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len){
     return ESP_OK;
 }
 
-uint16_t pms_get_data(pms_field_t field){
+int16_t pms_get_data(pms_field_t field){
     if(pms_sensor.type == PMS_TYPE_3003 && field >= PMS_FIELD_PC_0_3){
         ESP_LOGW(TAG, "requested field not available on PMS3003 sensor");
+        return 0;
+    }
+    if(pms_sensor.type == PMS_TYPE_5003T){
+        if(field == PMS_FIELD_PC_5_0 || field == PMS_FIELD_PC_10){
+            ESP_LOGW(TAG, "requested field not available on PMS5003T sensor");
+            return 0;
+        }
+    }
+    if(pms_sensor.type == PMS_TYPE_5003 && field >= PMS_FIELD_TEMP){
+        ESP_LOGW(TAG, "requested field not available on PMS5003 sensor");
         return 0;
     }
 
@@ -424,6 +434,9 @@ uint16_t pms_get_data(pms_field_t field){
         case PMS_FIELD_PC_5_0:      return (pms_sensor.raw_data[PMS_5_0UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_5_0UM_LOW_BYTE];
         case PMS_FIELD_PC_10:       return (pms_sensor.raw_data[PMS_10UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_10UM_LOW_BYTE];
 
+        case PMS_FIELD_TEMP:        return (pms_sensor.raw_data[PMS_TEMP_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_TEMP_LOW_BYTE];
+        case PMS_FIELD_HUMIDITY:    return (pms_sensor.raw_data[PMS_HUMID_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_HUMID_LOW_BYTE];
+        
         default:
             ESP_LOGW(TAG, "invalid data requested");
             return 0;
