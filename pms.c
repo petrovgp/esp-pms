@@ -61,9 +61,12 @@ static uint8_t pms_cmd_read_passive[] = {0x42, 0x4d, 0xe2, 0x00, 0x00, 0x01, 0x7
 #define PMS_5_0UM_HIGH_BYTE         0x18    // 5.0um particle concentration in 0.1L air
 #define PMS_5_0UM_LOW_BYTE          0x19    
 #define PMS_10UM_HIGH_BYTE          0x1A    // 10um particle concentration in 0.1L air
-#define PMS_10UM_LOW_BYTE           0x1B  
-#define PMS_TEMP_BYTE               0x1C    // Temperature (for PMS5003T)
-#define PMS_HUMIDITY_BYTE           0x1D    // Humidity (for PMS5003T)
+#define PMS_10UM_LOW_BYTE           0x1B
+
+#define PMS_TEMP_HIGH_BYTE          0x18    // Temperature (PMS5003T and PMS5003ST)
+#define PMS_TEMP_LOW_BYTE           0x19
+#define PMS_HUMID_HIGH_BYTE         0x1A    // Humidity (PMS5003T and PMS5003ST)
+#define PMS_HUMID_LOW_BYTE          0x1B
 
 // PMS UART baud rate
 #define PMS_BAUD_RATE 9600
