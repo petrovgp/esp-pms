@@ -8,22 +8,20 @@ ESP-IDF component for Plantower PMSX003 air quality sensors.
 
 | Sensor Model | Status                                                                |
 |--------------|-----------------------------------------------------------------------|
-| PMS1003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
+| PMS1003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) *  |
 | PMS3003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
 | PMS5003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
 | PMS5003T     | ![Supported](https://img.shields.io/badge/support-yes-brightgreen)    |
 | PMS5003ST    | ![Not supported](https://img.shields.io/badge/support-no-red)         |
-| PMS6003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
-| PMS7003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
-| PMS9003M     | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
-| PMSA003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) ** |
-| PMSX003-N    | ![Not supported](https://img.shields.io/badge/support-no-red) ***     |
+| PMS6003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) *  |
+| PMS7003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) *  |
+| PMS9003M     | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) *  |
+| PMSA003      | ![Supported](https://img.shields.io/badge/support-yes-brightgreen) *  |
+| PMSX003-N    | ![Not supported](https://img.shields.io/badge/support-no-red) **      |
 
-\* sensors are supported, but not all data is parsed
+\* sensors are supported under PMS_TYPE_5003 
 
-\*\* sensors are supported under PMS_TYPE_5003 
-
-\*\*\* unverified, no available datasheet
+\*\* unverified, no available datasheet
 
 ## Setup
 
