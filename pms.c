@@ -403,19 +403,27 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len){
 }
 
 int16_t pms_get_data(pms_field_t field){
-    if(pms_sensor.type == PMS_TYPE_3003 && field >= PMS_FIELD_PC_0_3){
-        ESP_LOGW(TAG, "requested field not available on PMS3003 sensor");
-        return 0;
-    }
-    if(pms_sensor.type == PMS_TYPE_5003T){
-        if(field == PMS_FIELD_PC_5_0 || field == PMS_FIELD_PC_10){
-            ESP_LOGW(TAG, "requested field not available on PMS5003T sensor");
-            return 0;
-        }
-    }
-    if(pms_sensor.type == PMS_TYPE_5003 && field >= PMS_FIELD_TEMP){
-        ESP_LOGW(TAG, "requested field not available on PMS5003 sensor");
-        return 0;
+    switch(pms_sensor.type){
+        case PMS_TYPE_3003:
+            if(field >= PMS_FIELD_PC_0_3){
+                ESP_LOGW(TAG, "requested field not available on PMS3003 sensor");
+                return 0;
+            }
+            break;
+        case PMS_TYPE_5003:
+            if(field >= PMS_FIELD_TEMP){
+                ESP_LOGW(TAG, "requested field not available on PMS5003 sensor");
+                return 0;
+            }
+            break;
+        case PMS_TYPE_5003T:
+            if(field == PMS_FIELD_PC_5_0 || field == PMS_FIELD_PC_10){
+                ESP_LOGW(TAG, "requested field not available on PMS5003T sensor");
+                return 0;
+            }
+            break;
+        default:
+            break;
     }
 
     switch (field) {
