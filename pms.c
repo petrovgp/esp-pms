@@ -446,8 +446,8 @@ int16_t pms_get_data(pms_field_t field){
         case PMS_FIELD_PC_5_0:      return (pms_sensor.raw_data[PMS_5_0UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_5_0UM_LOW_BYTE];
         case PMS_FIELD_PC_10:       return (pms_sensor.raw_data[PMS_10UM_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_10UM_LOW_BYTE];
 
-        case PMS_FIELD_TEMP:        return (pms_sensor.raw_data[PMS_TEMP_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_TEMP_LOW_BYTE];
-        case PMS_FIELD_HUMIDITY:    return (pms_sensor.raw_data[PMS_HUMID_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_HUMID_LOW_BYTE];
+        case PMS_FIELD_TEMP:        return ((pms_sensor.raw_data[PMS_TEMP_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_TEMP_LOW_BYTE]) / 10;
+        case PMS_FIELD_HUMIDITY:    return ((pms_sensor.raw_data[PMS_HUMID_HIGH_BYTE] << 8) | pms_sensor.raw_data[PMS_HUMID_LOW_BYTE]) / 10;
         
         default:
             ESP_LOGW(TAG, "invalid data requested");
