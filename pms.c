@@ -79,7 +79,7 @@ static uint8_t pms_cmd_read_passive[] = {0x42, 0x4d, 0xe2, 0x00, 0x00, 0x01, 0x7
 
 static const char *TAG = "pms";
 
-static pms_sensor_t pms_sensor = {0};
+static pms_sensor_t pms_sensor;
 
 static esp_err_t pms_init_control_pin(gpio_num_t pin, uint8_t initial_level){
     if (pin < 0 || pin >= GPIO_NUM_MAX) {
@@ -285,7 +285,7 @@ static esp_err_t pms_verify_checksum(const uint8_t *data, uint8_t len){
 
     // Compare checksums
     if(payload != checksum){
-        ESP_LOGE(TAG, "invalid checksum for recieved frame");
+        ESP_LOGE(TAG, "invalid checksum for received frame");
         return ESP_ERR_INVALID_CRC;
     }
 
@@ -351,7 +351,7 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len){
         // Check frame length
         uint8_t expected_len = pms_get_frame_len();
         if (len != expected_len) {
-            ESP_LOGE(TAG, "expected frame lenght is %u, but got %u", expected_len, len);
+            ESP_LOGE(TAG, "expected frame length is %u, but got %u", expected_len, len);
             return ESP_ERR_INVALID_SIZE;
         }
         // Verify checksum
