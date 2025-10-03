@@ -431,29 +431,38 @@ int16_t pms_get_data(pms_field_t field){
 }
 
 esp_err_t pms_init(pms_config_t *pms_config){
+    // Validate sensor type
+    if(pms_config->type < 0 || pms_config->type >= PMS_TYPE_MAX){
+        ESP_LOGE(TAG, "invalid sensor type");
+        return ESP_ERR_INVALID_ARG;
+    }
+    
     // Initialize default PMS settings
     pms_sensor.mode = PMS_MODE_ACTIVE;
     pms_sensor.state = PMS_STATE_ACTIVE;
     pms_sensor.type = pms_config->type;
     pms_sensor.uart_port = pms_config->uart_port;
-    pms_sensor.set_gpio = pms_config->set_gpio;
-    pms_sensor.reset_gpio = pms_config->reset_gpio;
 
     // Init GPIOs
-    if (pms_config->set_gpio != GPIO_NUM_NC){
-        if(pms_init_control_pin(pms_config->set_gpio, 1) != ESP_OK){
-            ESP_LOGE(TAG, "failed to init control pin %d", pms_config->set_gpio);
+    if (pms_config->set_gpio <= GPIO_NUM_NC || pms_config->set_gpio >= GPIO_NUM_MAX){
+        pms_sensor.set_gpio = GPIO_NUM_NC;
+    }else{
+        if (pms_init_control_pin(pms_config->set_gpio, 1) != ESP_OK){
+            ESP_LOGE(TAG, "failed to init GPIO pin %d", pms_config->reset_gpio);
             return ESP_ERR_INVALID_ARG;
         }
+        pms_sensor.set_gpio = pms_config->set_gpio;
     }
 
-    if(pms_config->reset_gpio != GPIO_NUM_NC){
+    if(pms_config->reset_gpio <= GPIO_NUM_NC || pms_config->reset_gpio >= GPIO_NUM_MAX){
+        pms_sensor.reset_gpio = GPIO_NUM_NC;
+    }else{
         if(pms_init_control_pin(pms_config->reset_gpio, 1) != ESP_OK){
-            ESP_LOGE(TAG, "failed to init control pin %d", pms_config->reset_gpio);
+            ESP_LOGE(TAG, "failed to init GPIO pin %d", pms_config->reset_gpio);
             return ESP_ERR_INVALID_ARG;
         }
+        pms_sensor.reset_gpio = pms_config->reset_gpio;
     }
-
     // Init timer for wake up delay
     pms_sensor.reset_timer = xTimerCreate(
         "pms_timer",
