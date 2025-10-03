@@ -301,12 +301,16 @@ pms_type_e pms_get_type(void){
     return pms_sensor.type;
 }
 
-static esp_err_t pms_verify_checksum(const uint8_t *data, uint8_t len){
-    if (len != PMS_X003_FRAME_LEN && len != PMS_3003_FRAME_LEN && len != PMS_RESPONSE_LEN){
-        ESP_LOGE(TAG, "invalid data length: %d", len);
-        return ESP_ERR_INVALID_SIZE;
+static uint8_t pms_get_frame_len(void){
+    switch(pms_sensor.type){
+        case PMS_TYPE_3003: return PMS_3003_FRAME_LEN;
+        case PMS_TYPE_5003:
+        case PMS_TYPE_5003T: return PMS_X003_FRAME_LEN;
+        default: return 0;
     }
+}
 
+static esp_err_t pms_verify_checksum(const uint8_t *data, uint8_t len){
     uint16_t checksum = (data[len - 2] << 8) | data[len - 1];
     uint16_t payload = 0;
     
@@ -381,7 +385,7 @@ esp_err_t pms_parse_data(const uint8_t *data, uint8_t len){
     // Check start bytes
     if(data[0] == PMS_START_BYTE_HIGH && data[1] == PMS_START_BYTE_LOW){
         // Check frame length
-        uint8_t expected_len = pms_sensor.type ? PMS_X003_FRAME_LEN : PMS_3003_FRAME_LEN;
+        uint8_t expected_len = pms_get_frame_len();
         if (len != expected_len) {
             ESP_LOGE(TAG, "expected frame lenght is %u, but got %u", expected_len, len);
             return ESP_ERR_INVALID_SIZE;
