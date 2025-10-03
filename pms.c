@@ -156,21 +156,29 @@ esp_err_t pms_reset(void){
 }
 
 esp_err_t pms_set_mode(pms_mode_e mode){
-    if (pms_sensor.state == PMS_STATE_SLEEP){
-        ESP_LOGW(TAG, "sensor is in sleep state, wake up to change mode");
+    if (pms_sensor.state < PMS_STATE_STABILIZING){
+        ESP_LOGW(TAG, "can't change sensor mode in current state");
         return ESP_ERR_INVALID_STATE;
-    }
-    if (mode < 0 || mode >= PMS_MODE_MAX){
-        ESP_LOGE(TAG, "invalid mode");
-        return ESP_ERR_INVALID_ARG;
     }
     if (pms_sensor.mode == mode)
         return ESP_OK;
 
-    uint8_t *command = mode == PMS_MODE_PASSIVE ? pms_cmd_mode_passive : pms_cmd_mode_active;
-    if(pms_send_cmd(command) != ESP_OK){
-        ESP_LOGE(TAG, "failed to send mode command");
-        return ESP_ERR_INVALID_RESPONSE;
+    switch(mode){
+        case PMS_MODE_PASSIVE:
+            if(pms_send_cmd(pms_cmd_mode_passive) != ESP_OK){
+                ESP_LOGE(TAG, "failed to send mode command");
+                return ESP_ERR_INVALID_RESPONSE;
+            }   
+            break;
+        case PMS_MODE_ACTIVE:
+            if(pms_send_cmd(pms_cmd_mode_active) != ESP_OK){
+                ESP_LOGE(TAG, "failed to send mode command");
+                return ESP_ERR_INVALID_RESPONSE;
+            }   
+            break;
+        default:
+            ESP_LOGE(TAG, "invalid mode");
+            return ESP_ERR_INVALID_ARG;
     }
 
     pms_sensor.mode = mode;
