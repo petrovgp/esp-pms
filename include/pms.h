@@ -1,8 +1,8 @@
 /**
- * @file pms.c
+ * @file pms.h
  * @author Marko Petrov (markopetrov690@gmail.com)
  * @brief ESP-IDF component for Plantower PMSX003 air quality sensors
- * @version 0.1
+ * @version 1.0
  * @date 2025-09-28
  * 
  * @copyright Copyright (c) 2025
