@@ -268,8 +268,13 @@ pms_type_e pms_get_type(void){
 static uint8_t pms_get_frame_len(void){
     switch(pms_sensor.type){
         case PMS_TYPE_3003: return PMS_3003_FRAME_LEN;
+        case PMS_TYPE_1003:
         case PMS_TYPE_5003:
-        case PMS_TYPE_5003T: return PMS_X003_FRAME_LEN;
+        case PMS_TYPE_5003T:
+        case PMS_TYPE_6003:
+        case PMS_TYPE_7003:
+        case PMS_TYPE_9003M:
+        case PMS_TYPE_A003: return PMS_X003_FRAME_LEN;
         default: return 0;
     }
 }
@@ -379,19 +384,24 @@ static esp_err_t pms_check_valid_field(pms_field_t field){
     switch(pms_sensor.type){
         case PMS_TYPE_3003:
             if(field >= PMS_FIELD_PC_0_3){
-                ESP_LOGW(TAG, "requested field not available on PMS3003 sensor");
+                ESP_LOGW(TAG, "requested field not available on current sensor");
                 return ESP_ERR_INVALID_ARG;
             }
             break;
+        case PMS_TYPE_1003:
         case PMS_TYPE_5003:
+        case PMS_TYPE_6003:
+        case PMS_TYPE_7003:
+        case PMS_TYPE_9003M:
+        case PMS_TYPE_A003:
             if(field >= PMS_FIELD_TEMP){
-                ESP_LOGW(TAG, "requested field not available on PMS5003 sensor");
+                ESP_LOGW(TAG, "requested field not available on current sensor");
                 return ESP_ERR_INVALID_ARG;
             }
             break;
         case PMS_TYPE_5003T:
             if(field == PMS_FIELD_PC_5_0 || field == PMS_FIELD_PC_10){
-                ESP_LOGW(TAG, "requested field not available on PMS5003T sensor");
+                ESP_LOGW(TAG, "requested field not available on current sensor");
                 return ESP_ERR_INVALID_ARG;
             }
             break;

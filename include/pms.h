@@ -112,9 +112,14 @@ extern "C" {
  * @brief PMS sensor type
  */
 typedef enum{
-    PMS_TYPE_3003 = 0,      // PMS3003 type sensor
+    PMS_TYPE_1003 = 0,      // PMS1003 type sensor
+    PMS_TYPE_3003,          // PMS3003 type sensor
     PMS_TYPE_5003,          // PMS5003 type sensor
     PMS_TYPE_5003T,         // PMS5003T type sensor
+    PMS_TYPE_6003,          // PMS6003 type sensor
+    PMS_TYPE_7003,          // PMS7003 type sensor
+    PMS_TYPE_9003M,         // PMS9003M type sensor
+    PMS_TYPE_A003,          // PMSA003 type sensor
     PMS_TYPE_MAX
 } pms_type_e;
 
