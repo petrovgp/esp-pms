@@ -20,12 +20,16 @@ void pms_queue_task(void *pvParameters){
             switch(event.type){
                 case UART_DATA:
                     int len = uart_read_bytes(pms_get_uart_port(), (uint8_t*)&data, sizeof(data), 0);
-                    if(len > 0){
-                        if(pms_parse_data((uint8_t*)&data, len) == ESP_OK){
-                            ESP_LOGI(TAG, "PMS1 data: %d", pms_get_data(PMS_FIELD_PM1_ATM));
-                            ESP_LOGI(TAG, "PMS2.5 data: %d", pms_get_data(PMS_FIELD_PM2_5_ATM));
-                            ESP_LOGI(TAG, "PMS10 data: %d", pms_get_data(PMS_FIELD_PM10_ATM));
+                    if(pms_get_state() == PMS_STATE_ACTIVE){
+                        if(len > 0){
+                            if(pms_parse_data((uint8_t*)&data, len) == ESP_OK){
+                                ESP_LOGI(TAG, "PM1 data: %d ug/m3", pms_get_data(PMS_FIELD_PM1_ATM));
+                                ESP_LOGI(TAG, "PM2.5 data: %d ug/m3", pms_get_data(PMS_FIELD_PM2_5_ATM));
+                                ESP_LOGI(TAG, "PM10 data: %d ug/m3", pms_get_data(PMS_FIELD_PM10_ATM));
+                            }
                         }
+                    }else{
+                        ESP_LOGW(TAG, "data received while sensor not in active state, ignoring");
                     }
                     break;
 
@@ -58,7 +62,6 @@ void app_main(void){
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
     };
 
-    data_queue = xQueueCreate(10, sizeof(uart_event_t));
     ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, 1024 * 2, 0, 10, &data_queue, 0));
     ESP_ERROR_CHECK(uart_param_config(UART_NUM_0, &uart_config));
 

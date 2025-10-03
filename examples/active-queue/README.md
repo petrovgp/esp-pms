@@ -13,13 +13,13 @@ This example can be done without connecting any control pins (SET and/or RESET p
     |           |----> 5V         |           |
     |           |----> GND        |           |
     |           |                 |           |
-    |           | SET       GPIOx |           |
+    |           | SET       GPIO9 |           |
     |           |---<>---+---<>---|           |
     |           | RX           TX |           |
     |  PMSX003  |----<---+---<----|   ESP32   |
     |           | TX          RX  |           |
     |           |---->---+--->----|           |
-    |           | RESET     GPIOx |           |
+    |           | RESET    GPIO10 |           |
     |           |---<>---+---<>---|           |
     |           |                 |           |
     |           |                 |           |

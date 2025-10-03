@@ -21,9 +21,9 @@ void pms_passive_task(void *pvParameters){
                     int len = uart_read_bytes(pms_get_uart_port(), data, sizeof(data), 100 / portTICK_PERIOD_MS);
                     if(len > 0){
                         if(pms_parse_data(data, len) == ESP_OK){
-                            ESP_LOGI(TAG, "PMS1 data: %d", pms_get_data(PMS_FIELD_PM1_ATM));
-                            ESP_LOGI(TAG, "PMS2.5 data: %d", pms_get_data(PMS_FIELD_PM2_5_ATM));
-                            ESP_LOGI(TAG, "PMS10 data: %d", pms_get_data(PMS_FIELD_PM10_ATM));
+                            ESP_LOGI(TAG, "PM1 data: %d ug/m3", pms_get_data(PMS_FIELD_PM1_ATM));
+                            ESP_LOGI(TAG, "PM2.5 data: %d ug/m3", pms_get_data(PMS_FIELD_PM2_5_ATM));
+                            ESP_LOGI(TAG, "PM10 data: %d ug/m3", pms_get_data(PMS_FIELD_PM10_ATM));
                             ESP_LOGI(TAG, "putting sensor to sleep...");
                             if(pms_set_state(PMS_STATE_SLEEP) != ESP_OK){
                                 ESP_LOGE(TAG, "failed to put sensor to sleep");
